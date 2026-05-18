@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumina Boutique | Moda Femenina</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Lato', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            light: '#fdfbf7', // Beige muy claro
+                            DEFAULT: '#d4af37', // Dorado suave
+                            dark: '#2c3e50', // Azul marino muy oscuro
+                            accent: '#e67e22' // Naranja quemado suave
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: theme('colors.brand.light');
+            color: theme('colors.brand.dark');
+        }
+        
+        /* Contenedor del canvas para efecto de fondo */
+        #hero-canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Detrás del contenido */
+            overflow: hidden;
+            background: linear-gradient(135deg, #fdfbf7 0%, #f4eee0 100%);
+        }
+
+        .glass-panel {
+            background: rgba(253, 251, 247, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Ocultar scrollbar para un look más limpio */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fdfbf7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d4af37;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased relative">
+
+    <nav class="fixed w-full z-50 glass-panel py-4 px-6 md:px-12 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#" class="text-3xl font-serif font-bold tracking-wider text-brand-dark">
+                LUMINA<span class="text-brand text-4xl leading-none">.</span>
+            </a>
+
+            <!-- Enlaces Desktop -->
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="#coleccion" class="text-sm uppercase tracking-widest hover:text-brand transition-colors">Nueva Colección</a>
+                <a href="#vestidos" class="text-sm uppercase tracking-widest hover:text-brand transition-colors">Vestidos</a>
+                <a href="#accesorios" class="text-sm uppercase tracking-widest hover:text-brand transition-colors">Accesorios</a>
+                <a href="#nosotros" class="text-sm uppercase tracking-widest hover:text-brand transition-colors">Sobre Nosotros</a>
+            </div>
+
+            <!-- Iconos -->
+            <div class="flex space-x-5 items-center">
+                <button class="hover:text-brand transition-colors"><i class="fas fa-search text-lg"></i></button>
+                <button class="hover:text-brand transition-colors"><i class="far fa-user text-lg"></i></button>
+                <button class="hover:text-brand transition-colors relative">
+                    <i class="fas fa-shopping-bag text-lg"></i>
+                    <span class="absolute -top-2 -right-2 bg-brand text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">2</span>
+                </button>
+                <!-- Menú Hamburguesa Móvil -->
+                <button class="md:hidden hover:text-brand transition-colors"><i class="fas fa-bars text-xl"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative h-screen flex items-center justify-center overflow-hidden pt-20">
+        <!-- Contenedor del Canvas para el fondo animado -->
+        <div id="hero-canvas-container">
+            <canvas id="heroCanvas"></canvas>
+        </div>
+
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+            <span class="block text-brand font-serif italic text-xl md:text-2xl mb-4">Otoño / Invierno 2026</span>
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-serif font-bold mb-6 text-brand-dark leading-tight drop-shadow-sm">
+                Elegancia en <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-dark via-brand to-brand-dark">Movimiento</span>
+            </h1>
+            <p class="text-lg md:text-xl font-light mb-10 max-w-2xl mx-auto text-gray-700">
+                Descubre nuestra nueva colección diseñada para la mujer moderna que valora el estilo atemporal y la comodidad sin compromisos.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                <a href="#coleccion" class="bg-brand-dark text-white px-8 py-4 rounded-none hover:bg-black transition-colors uppercase tracking-widest text-sm w-full sm:w-auto text-center border border-brand-dark">Explorar Colección</a>
+                <a href="#" class="bg-transparent text-brand-dark px-8 py-4 rounded-none hover:bg-brand-light transition-colors uppercase tracking-widest text-sm w-full sm:w-auto text-center border border-brand-dark">Ver Video</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="coleccion" class="py-20 px-6 md:px-12 max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">Novedades Exclusivas</h2>
+            <div class="h-1 w-24 bg-brand mx-auto"></div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Producto 1 -->
+            <div class="product-card group relative overflow-hidden bg-white rounded-lg shadow-sm">
+                <div class="relative h-96 overflow-hidden">
+                    <img src="https://placehold.co/400x600/f0e6d2/2c3e50?text=Abrigo+Lana" alt="Abrigo de Lana" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute top-4 left-4 bg-white px-2 py-1 text-xs font-bold uppercase tracking-wider text-brand-dark">Nuevo</div>
+                    <div class="absolute bottom-0 w-full p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 glass-panel">
+                        <button class="w-full bg-brand-dark text-white py-2 uppercase text-sm tracking-widest hover:bg-brand transition-colors" onclick="mostrarMensaje('Añadido al carrito')">Añadir al Carrito</button>
+                    </div>
+                </div>
+                <div class="p-5 text-center">
+                    <h3 class="text-lg font-serif mb-1 group-hover:text-brand transition-colors">Abrigo Cruzado Camel</h3>
+                    <p class="text-gray-500 text-sm mb-2">Lana Merino 100%</p>
+                    <p class="text-xl font-bold">185.00 €</p>
+                </div>
+            </div>
+
+            <!-- Producto 2 -->
+            <div class="product-card group relative overflow-hidden bg-white rounded-lg shadow-sm">
+                <div class="relative h-96 overflow-hidden">
+                    <img src="https://placehold.co/400x600/e8ecef/2c3e50?text=Vestido+Seda" alt="Vestido de Seda" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute bottom-0 w-full p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 glass-panel">
+                        <button class="w-full bg-brand-dark text-white py-2 uppercase text-sm tracking-widest hover:bg-brand transition-colors" onclick="mostrarMensaje('Añadido al carrito')">Añadir al Carrito</button>
+                    </div>
+                </div>
+                <div class="p-5 text-center">
+                    <h3 class="text-lg font-serif mb-1 group-hover:text-brand transition-colors">Vestido Midi Esmeralda</h3>
+                    <p class="text-gray-500 text-sm mb-2">Seda Salvaje</p>
+                    <p class="text-xl font-bold">120.00 €</p>
+                </div>
+            </div>
+
+            <!-- Producto 3 -->
+            <div class="product-card group relative overflow-hidden bg-white rounded-lg shadow-sm">
+                <div class="relative h-96 overflow-hidden">
+                    <img src="https://placehold.co/400x600/f5e1da/2c3e50?text=Blusa+Romantica" alt="Blusa Romantica" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute top-4 left-4 bg-brand text-white px-2 py-1 text-xs font-bold uppercase tracking-wider">-20%</div>
+                    <div class="absolute bottom-0 w-full p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 glass-panel">
+                        <button class="w-full bg-brand-dark text-white py-2 uppercase text-sm tracking-widest hover:bg-brand transition-colors" onclick="mostrarMensaje('Añadido al carrito')">Añadir al Carrito</button>
+                    </div>
+                </div>
+                <div class="p-5 text-center">
+                    <h3 class="text-lg font-serif mb-1 group-hover:text-brand transition-colors">Blusa Volantes Blanca</h3>
+                    <p class="text-gray-500 text-sm mb-2">Algodón Orgánico</p>
+                    <p class="text-xl font-bold"><span class="line-through text-gray-400 text-sm mr-2">65.00 €</span>52.00 €</p>
+                </div>
+            </div>
+
+            <!-- Producto 4 -->
+            <div class="product-card group relative overflow-hidden bg-white rounded-lg shadow-sm">
+                <div class="relative h-96 overflow-hidden">
+                    <img src="https://placehold.co/400x600/d5d8dc/2c3e50?text=Pantalon+Palazzo" alt="Pantalon Palazzo" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute bottom-0 w-full p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 glass-panel">
+                        <button class="w-full bg-brand-dark text-white py-2 uppercase text-sm tracking-widest hover:bg-brand transition-colors" onclick="mostrarMensaje('Añadido al carrito')">Añadir al Carrito</button>
+                    </div>
+                </div>
+                <div class="p-5 text-center">
+                    <h3 class="text-lg font-serif mb-1 group-hover:text-brand transition-colors">Pantalón Palazzo Plisado</h3>
+                    <p class="text-gray-500 text-sm mb-2">Caída Fluida</p>
+                    <p class="text-xl font-bold">89.00 €</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-12 text-center">
+            <a href="#" class="inline-block border-b-2 border-brand-dark text-brand-dark font-serif text-lg pb-1 hover:text-brand hover:border-brand transition-colors">Ver Toda la Colección <i class="fas fa-arrow-right ml-2 text-sm"></i></a>
+        </div>
+    </section>
+
+    <section class="py-24 relative overflow-hidden bg-brand-dark text-white">
+        <!-- Canvas secundario para partículas -->
+        <canvas id="particlesCanvas" class="absolute inset-0 w-full h-full opacity-30"></canvas>
+        
+        <div class="max-w-5xl mx-auto px-6 relative z-10 text-center">
+            <h2 class="text-4xl md:text-5xl font-serif font-bold mb-6">El Arte de Vestir Bien</h2>
+            <p class="text-lg md:text-xl font-light mb-10 text-gray-300 max-w-2xl mx-auto">
+                Cada prenda es diseñada con atención meticulosa a los detalles, asegurando un ajuste perfecto y una calidad que perdura en el tiempo.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 text-center">
+                <div>
+                    <div class="w-16 h-16 mx-auto bg-brand rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-leaf text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Tejidos Sostenibles</h3>
+                    <p class="text-gray-400 text-sm">Materiales éticos y respetuosos con el medio ambiente.</p>
+                </div>
+                <div>
+                    <div class="w-16 h-16 mx-auto bg-brand rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-cut text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Corte Perfecto</h3>
+                    <p class="text-gray-400 text-sm">Patrones estudiados para realzar la silueta natural.</p>
+                </div>
+                <div>
+                    <div class="w-16 h-16 mx-auto bg-brand rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-shipping-fast text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Envío Express</h3>
+                    <p class="text-gray-400 text-sm">Recibe tus prendas en 24/48h con envío gratuito.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-white border-t border-gray-200 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="col-span-1 md:col-span-1">
+                    <a href="#" class="text-2xl font-serif font-bold tracking-wider text-brand-dark mb-6 block">
+                        LUMINA<span class="text-brand">.</span>
+                    </a>
+                    <p class="text-gray-500 text-sm mb-6 leading-relaxed">
+                        Redefiniendo la elegancia cotidiana para la mujer contemporánea desde 2026.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-brand-dark hover:bg-brand hover:text-white transition-colors"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-brand-dark hover:bg-brand hover:text-white transition-colors"><i class="fab fa-pinterest-p"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-brand-dark hover:bg-brand hover:text-white transition-colors"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold uppercase tracking-widest text-sm mb-6">Comprar</h4>
+                    <ul class="space-y-3 text-sm text-gray-500">
+                        <li><a href="#" class="hover:text-brand transition-colors">Novedades</a></li>
+                        <li><a href="#" class="hover:text-brand transition-colors">Vestidos</a></li>
+                        <li><a href="#" class="hover:text-brand transition-colors">Pantalones</a></li>
+                        <li><a href="#" class="hover:text-brand transition-colors">Blusas & Tops</a></li>
+                        <li><a href="#" class="hover:text-brand transition-colors">Sale</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold uppercase tracking-widest text-sm mb-6">Ayuda</h4>
+                    <ul class="space-y-3 text-sm text-gray-500">
+                        <li><a href="#" class="hover:text-brand transition-colors">Envíos y Devoluciones</a></li>
+                        <li><a href="#" class="hover:text-brand transition-colors">Guía de Tallas</a></li>
+                        <li><a href="#" class="hover:text-brand transition-colors">Preguntas Frecuentes</a></li>
+                        <li><a href="#" class="hover:text-brand transition-colors">Contacto</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold uppercase tracking-widest text-sm mb-6">Newsletter</h4>
+                    <p class="text-sm text-gray-500 mb-4">Suscríbete para recibir un 10% de descuento en tu primera compra y enterarte de novedades.</p>
+                    <form class="flex" onsubmit="event.preventDefault(); mostrarMensaje('¡Gracias por suscribirte!');">
+                        <input type="email" placeholder="Tu email" class="bg-gray-100 px-4 py-2 w-full text-sm focus:outline-none focus:ring-1 focus:ring-brand" required>
+                        <button type="submit" class="bg-brand-dark text-white px-4 py-2 text-sm uppercase hover:bg-brand transition-colors">Ir</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-sm text-gray-400">&copy; 2026 Lumina Boutique. Todos los derechos reservados.</p>
+                <div class="flex space-x-4 mt-4 md:mt-0 text-sm text-gray-400">
+                    <a href="#" class="hover:text-brand">Privacidad</a>
+                    <a href="#" class="hover:text-brand">Términos</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Contenedor para mensajes personalizados (sustituto de alert) -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+
+    <script>
+        
+        // Función para mostrar mensajes personalizados en lugar de alert()
+        function mostrarMensaje(mensaje) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            toast.className = 'bg-brand-dark text-white px-6 py-3 rounded shadow-lg transform transition-all duration-300 translate-y-10 opacity-0 flex items-center gap-3';
+            toast.innerHTML = `
+                <i class="fas fa-check-circle text-brand"></i>
+                <span class="font-sans text-sm">${mensaje}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Animar entrada
+            setTimeout(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            }, 10);
+            
+            // Eliminar después de 3 segundos
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Efecto scroll en Navbar
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-md');
+                nav.classList.replace('py-4', 'py-2');
+            } else {
+                nav.classList.remove('shadow-md');
+                nav.classList.replace('py-2', 'py-4');
+            }
+        });
+
+        
+        // Configuración del Canvas del Hero
+        const heroCanvas = document.getElementById('heroCanvas');
+        const hCtx = heroCanvas.getContext('2d');
+        
+        let width, height;
+        let shapes = [];
+
+        function initHeroCanvas() {
+            resizeHeroCanvas();
+            window.addEventListener('resize', resizeHeroCanvas);
+            createShapes();
+            animateHero();
+        }
+
+        function resizeHeroCanvas() {
+            width = heroCanvas.width = document.getElementById('hero-canvas-container').clientWidth;
+            height = heroCanvas.height = document.getElementById('hero-canvas-container').clientHeight;
+        }
+
+        class FluidShape {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 300 + 100;
+                // Colores de la paleta de la marca con opacidad baja
+                const colors = ['rgba(212, 175, 55, 0.05)', 'rgba(230, 126, 34, 0.03)', 'rgba(44, 62, 80, 0.02)'];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Puntos para curva de Bezier para hacer formas orgánicas
+                this.points = [];
+                const numPoints = 6;
+                for (let i = 0; i < numPoints; i++) {
+                    const angle = (i / numPoints) * Math.PI * 2;
+                    this.points.push({
+                        x: Math.cos(angle),
+                        y: Math.sin(angle),
+                        offset: Math.random() * 50 + 50,
+                        speed: Math.random() * 0.02 + 0.005,
+                        angle: Math.random() * Math.PI * 2
+                    });
+                }
+                
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+            }
+
+            update() {
+                // Mover la forma entera lentamente
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Rebotar en los bordes suavemente
+                if (this.x < -this.size || this.x > width + this.size) this.vx *= -1;
+                if (this.y < -this.size || this.y > height + this.size) this.vy *= -1;
+
+                // Animar los puntos de control
+                this.points.forEach(p => {
+                    p.angle += p.speed;
+                });
+            }
+
+            draw(ctx) {
+                ctx.beginPath();
+                
+                const p0 = this.getPoint(0);
+                const pLast = this.getPoint(this.points.length - 1);
+                
+                // Empezar a medio camino entre el último punto y el primero
+                let xc = (p0.x + pLast.x) / 2;
+                let yc = (p0.y + pLast.y) / 2;
+                ctx.moveTo(xc, yc);
+
+                for (let i = 0; i < this.points.length; i++) {
+                    const pCurrent = this.getPoint(i);
+                    const pNext = this.getPoint((i + 1) % this.points.length);
+                    
+                    xc = (pCurrent.x + pNext.x) / 2;
+                    yc = (pCurrent.y + pNext.y) / 2;
+                    
+                    // Dibujar curva cuadrática a través de los puntos
+                    ctx.quadraticCurveTo(pCurrent.x, pCurrent.y, xc, yc);
+                }
+
+                ctx.closePath();
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            getPoint(index) {
+                const p = this.points[index];
+                // El radio respira basado en el ángulo
+                const r = this.size + Math.sin(p.angle) * p.offset;
+                return {
+                    x: this.x + p.x * r,
+                    y: this.y + p.y * r
+                };
+            }
+        }
+
+        function createShapes() {
+            shapes = [];
+            // Crear unas cuantas formas grandes
+            for (let i = 0; i < 5; i++) {
+                shapes.push(new FluidShape());
+            }
+        }
+
+        function animateHero() {
+            // Limpiar canvas con un ligero rastro
+            hCtx.clearRect(0, 0, width, height);
+            
+            shapes.forEach(shape => {
+                shape.update();
+                shape.draw(hCtx);
+            });
+            
+            requestAnimationFrame(animateHero);
+        }
+
+        
+        // Configuración del Canvas de Partículas en el banner oscuro
+        const pCanvas = document.getElementById('particlesCanvas');
+        const pCtx = pCanvas.getContext('2d');
+        let pWidth, pHeight;
+        let particles = [];
+
+        function initParticlesCanvas() {
+            resizeParticlesCanvas();
+            window.addEventListener('resize', resizeParticlesCanvas);
+            createParticles();
+            animateParticles();
+        }
+
+        function resizeParticlesCanvas() {
+            pWidth = pCanvas.width = pCanvas.parentElement.clientWidth;
+            pHeight = pCanvas.height = pCanvas.parentElement.clientHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * pWidth;
+                this.y = Math.random() * pHeight;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = Math.random() * -1 - 0.2; // Suben lentamente
+                this.opacity = Math.random() * 0.5 + 0.1;
+                // Color dorado
+                this.color = `rgba(212, 175, 55, ${this.opacity})`;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                // Reposicionar en la parte inferior si salen por arriba
+                if (this.y < 0) {
+                    this.y = pHeight;
+                    this.x = Math.random() * pWidth;
+                }
+            }
+            draw() {
+                pCtx.beginPath();
+                pCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                pCtx.fillStyle = this.color;
+                pCtx.fill();
+            }
+        }
+
+        function createParticles() {
+            particles = [];
+            for (let i = 0; i < 100; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            pCtx.clearRect(0, 0, pWidth, pHeight);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        // Inicializar todo al cargar la ventana
+        window.onload = function() {
+            initHeroCanvas();
+            initParticlesCanvas();
+        };
+
+    </script>
+</body>
+</html>
